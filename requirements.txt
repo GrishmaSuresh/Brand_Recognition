@@ -7,4 +7,5 @@ pyzbar~=0.1.9
 pillow~=10.4.0
 gunicorn
 pyzbar~=0.1.8
+libzbar0~=0.10+dfsg-1
 
