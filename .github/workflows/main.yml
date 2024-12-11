@@ -54,7 +54,7 @@ jobs:
       run: |
         echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: ${GITHUB_REPOSITORY#*/}"
         flutter config --no-analytics
-        flet build web --base-url ${Brand_RecognitionY#*/} --route-url-strategy hash
+        flet build web --base-url ${https://github.com/GrishmaSuresh/Brand_recognition#*/} --route-url-strategy hash
 
     - name: Upload Artifact
       uses: actions/upload-pages-artifact@v3
