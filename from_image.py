@@ -16,7 +16,7 @@ def get_barcode_data(image_path):
 
 # Function to get product details from the Barcode Lookup API
 def get_product_details(barcode_data):
-    api_key = 'API_KEY'  # Replace with your Barcode Lookup API key
+    api_key = 'gzrbqebltu3nc54rw4our6ay9329h0'  # Replace with your Barcode Lookup API key
     url = f'https://api.barcodelookup.com/v3/products?barcode={barcode_data}&key={api_key}'
 
     # Make an API request to get product details
@@ -96,7 +96,7 @@ def print_product_details(product_details):
 
 # Example usage:
 # 1. Scan barcode from an image
-image_path = "images/working1.png"  # Replace with the path to your image file
+image_path = "images/col1.jpg"  # Replace with the path to your image file
 barcode_data = get_barcode_data(image_path)
 
 if barcode_data:

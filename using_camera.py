@@ -1,11 +1,43 @@
 import cv2
 from pyzbar.pyzbar import decode
 import requests
+import mysql.connector
+from datetime import datetime
+
+
+# Function to connect to the MySQL database
+def connect_to_database():
+    return mysql.connector.connect(
+        host="localhost",       # Replace with your database host
+        user="root",   # Replace with your database username
+        password="grishmasuresh",  # Replace with your database password
+        database="brand"   # Replace with your database name
+    )
+
+
+# Function to insert details into the database
+def insert_into_database(timestamp, brand):
+    try:
+        db = connect_to_database()
+        cursor = db.cursor()
+        query = """
+        INSERT INTO barcode_details (timestamp, brand)
+        VALUES (%s, %s)
+        """
+        cursor.execute(query, (timestamp, brand))
+        db.commit()
+        print("Details stored in the database successfully.")
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+    finally:
+        if db.is_connected():
+            cursor.close()
+            db.close()
 
 
 # Function to get product details from the Barcode Lookup API
 def get_product_details(barcode_data):
-    api_key = 'API_KEY'  # Replace with your Barcode Lookup API key
+    api_key = 'cjynapuus5eq1bqobj93t55xn0f7jz'  # Replace with your Barcode Lookup API key
     url = f'https://api.barcodelookup.com/v3/products?barcode={barcode_data}&key={api_key}'
 
     # Make an API request to get product details
@@ -17,49 +49,12 @@ def get_product_details(barcode_data):
         if products:
             product = products[0]
 
-            # Only include fields if they exist and have content
-            product_details = {}
+            # Extract required details
+            brand = product.get('brand', 'Unknown')
 
-            if product.get('upc'):
-                product_details['UPC'] = product['upc']
-            if product.get('category'):
-                product_details['Category'] = product['category']
-            if product.get('title'):
-                product_details['Title'] = product['title']
-            if product.get('mpn'):
-                product_details['MPN'] = product['mpn']
-            if product.get('model'):
-                product_details['Model'] = product['model']
-            if product.get('asin'):
-                product_details['ASIN'] = product['asin']
-            if product.get('manufacturer'):
-                product_details['Manufacturer'] = product['manufacturer']
-            if product.get('brand'):
-                product_details['Brand'] = product['brand']
-            if product.get('age_group'):
-                product_details['Age Group'] = product['age_group']
-            if product.get('color'):
-                product_details['Color'] = product['color']
-            if product.get('format'):
-                product_details['Format'] = product['format']
-            if product.get('multipack'):
-                product_details['Multipack'] = product['multipack']
-            if product.get('size'):
-                product_details['Size'] = product['size']
-            if product.get('dimensions'):
-                product_details['Dimensions'] = product['dimensions']
-            if product.get('weights'):
-                product_details['Weights'] = product['weights']
-            if product.get('release_date'):
-                product_details['Release Date'] = product['release_date']
-            if product.get('description'):
-                product_details['Description'] = product['description']
-            if product.get('feature'):
-                product_details['Feature'] = product['feature']
-            if product.get('images') and product['images']:
-                product_details['Image'] = product['images']
-
-            return product_details if product_details else {'Error': 'No relevant details found for this barcode'}
+            return {
+                'Brand': brand
+            }
         else:
             return {'Error': 'No product found for this barcode'}
     else:
@@ -101,6 +96,12 @@ def scan_barcode_from_webcam():
                 print("Product Details:")
                 print_product_details(product_details)
 
+                # Extract details and store them in the database
+                if 'Error' not in product_details:
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    brand = product_details.get('Brand', 'Unknown')
+                    insert_into_database(timestamp, brand)
+
         cv2.imshow("Barcode Scanner", frame)  # Display the frame
 
         # Break loop on 'q' key press
@@ -112,4 +113,6 @@ def scan_barcode_from_webcam():
 
 
 # Example usage:
-scan_barcode_from_webcam()  # Call the function to start scanning from the webcam
+# Call the function to start scanning from the webcam
+if __name__ == '__main__':
+    scan_barcode_from_webcam()
