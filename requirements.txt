@@ -6,5 +6,5 @@ requests~=2.32.3
 pyzbar~=0.1.9
 pillow~=10.4.0
 gunicorn
-python-zbar = 0.1.9
+python-zbar~=0.1.9
 libzbar0
