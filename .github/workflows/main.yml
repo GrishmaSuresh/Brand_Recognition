@@ -50,11 +50,13 @@ jobs:
     - name: Check flutter version
       run: flutter --version
 
+    # Update the base URL to your GitHub Pages URL
     - name: Flet Build Web
       run: |
-        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: ${GITHUB_REPOSITORY#*/}"
+        echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}, USER: ${GITHUB_REPOSITORY%/*}, PROJECT_BASE_URL: https://grishmasuresh.github.io/Brand_Recognition/"
         flutter config --no-analytics
-        flet build web --base-url ${https://github.com/GrishmaSuresh/Brand_recognition#*/} --route-url-strategy hash
+        # Use your GitHub Pages URL as base-url
+        flet build web --base-url https://grishmasuresh.github.io/Brand_Recognition/ --route-url-strategy hash
 
     - name: Upload Artifact
       uses: actions/upload-pages-artifact@v3
